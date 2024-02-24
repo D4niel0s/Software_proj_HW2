@@ -26,7 +26,8 @@ def main():
     for i in cents:
        print(findPinARR(i, data))
     
-
+    
+#Returns the index of a Point in a given Point array, returns -1 if not found
 def findPinARR(x, arr):
     for i in range(len(arr)):
         flag = True
@@ -37,29 +38,28 @@ def findPinARR(x, arr):
         if(flag == True):
             return i
     return -1
-        
 
-
+#Initializes centroids from datapoints, returns centroids
 def INIT_CENTS(dp, d, k):
     cents = []
     prob = []
 
-    cents.append(np.random.choice(dp))
+    cents.append(np.random.choice(dp)) #First centroid is chosen uniformly from datapoints
     
     for i in range(1,k):
-        prob = computeNewProb(cents, dp, d)
-        cents.append(np.random.choice(dp,p=prob))
+        prob = computeNewProb(cents, dp, d) #Update distribution
+        cents.append(np.random.choice(dp,p=prob)) #Draw a new centroid according to computed distribution
 
     return cents
 
-
+#Computes weighted probabily distribution among points - according to distance from other centroids
 def computeNewProb(cents, dp, dim):
     DistArr = [0]*len(dp)
     Distsum = 0
     prob = [0]*len(dp)
 
     for i in range(len(dp)):
-        _, DistArr[i] = FindClosestCentroid(dp[i], cents, dim);
+        _, DistArr[i] = FindClosestCentroid(dp[i], cents, dim) #Compute distance from closest centroid
         Distsum += DistArr[i]
     
     for i in range(len(dp)):
@@ -67,6 +67,7 @@ def computeNewProb(cents, dp, dim):
 
     return prob
 
+#Changed this function from the last Homework - now returns a tuple including assigned cluster as well as the min distance from it
 def FindClosestCentroid(x, centroids, dim):
     assigned = 0
     minDist = dist(x, centroids[0], dim)
@@ -78,7 +79,8 @@ def FindClosestCentroid(x, centroids, dim):
     
     return (assigned, minDist)
 
-
+#Compute distance between two points
+#"Borrowed" from my last Homework.
 def dist(x,y, dim):
     dist = 0
     for i in range(dim):
