@@ -41,17 +41,14 @@ def findPinARR(x, arr):
 
 
 def INIT_CENTS(dp, d, k):
-    dataclone = dp.copy()
     cents = []
     prob = []
 
-    cents.append(np.random.choice(dataclone))
-    dataclone.remove(cents[0])
+    cents.append(np.random.choice(dp))
     
     for i in range(1,k):
-        prob = computeNewProb(cents, dataclone, d)
-        cents.append(np.random.choice(dataclone,p=prob))
-        dataclone.remove(cents[i])
+        prob = computeNewProb(cents, dp, d)
+        cents.append(np.random.choice(dp,p=prob))
 
     return cents
 
