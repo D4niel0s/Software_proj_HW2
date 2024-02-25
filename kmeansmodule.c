@@ -147,6 +147,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     PyObject *arr1;
     PyObject *arr2;
     PyObject *PyDbl;
+    PyObject *OBJ;
 
     if(!PyArg_ParseTuple(args, "iiiidOO", &K,&N,&d,&iter,&Epsilon,&GivenDP,&GivenCents)){
         return NULL;
@@ -174,21 +175,23 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
             centroids[i].cluster = -1;
         }
 
-        if(data[i].coords == NULL || centroids[i].cords == NULL){
+        if(data[i].coords == NULL || centroids[i].coords == NULL){
             printf("An Error Has Occurred\n");
             arr2 = NULL;
             goto FREEALL;
         }
 
         for(j=0;j<d;++j){
-            (data[i].coords)[j] = PyFloat_AsDouble(PyList_GetItem(arr1, j));
+            OBJ = PyList_GetItem(arr1, j);
+            (data[i].coords)[j] = PyFloat_AsDouble(OBJ);
             if(i<K){
-                (centroids[i].coords)[j] = PyFloat_AsDouble(PyList_GetItem(arr2, j));
+                OBJ = PyList_GetItem(arr2, j);
+                (centroids[i].coords)[j] = PyFloat_AsDouble(OBJ);
             }
         }
     }
 
-    KMeans(K,N,d,iter,data,centroids,ERR_FLAG,Epsilon);
+    KMeans(K,N,d,iter,data,centroids,&ERR_FLAG,Epsilon);
     if(ERR_FLAG){
         arr2 = NULL; /*Set return value to NULL*/
         goto FREEALL; /*We still have to free eveything we allocated*/
@@ -202,7 +205,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
             PyDbl = Py_BuildValue("d", (centroids[i].coords)[j]);
             PyList_SetItem(arr1, j, PyDbl);
         }
-        PyList_SetItem(arr2, i, arr1)
+        PyList_SetItem(arr2, i, arr1);
     }
 
     /*free everything*/
@@ -222,7 +225,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
 
 
 static PyMethodDef kmeans_methods[] = {
-    {"kmeans",(PyFunction) kmeans_c, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
+    {"kmeans",(PyCFunction) kmeans_c, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
     {NULL,NULL,0,NULL}
 };
 
