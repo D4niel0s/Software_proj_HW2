@@ -29,7 +29,9 @@ def main():
     mat = KM.kmeans(3,100,4,1000,0.01,data,cents);
 
     for i in mat:
-        print(i)
+        for j in i:
+            print("%.4f" % j, end=',')
+        print()
 
 #Returns the index of a Point in a given Point array, returns -1 if not found
 def findPinARR(x, arr):
