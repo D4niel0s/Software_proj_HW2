@@ -219,7 +219,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     free(data);
     free(centroids);
 
-    /*If everything succeeded, arr2 has an K x d matrix representing all centroids. If there was an error, arr2 is NULL*/
+    /*If everything succeeded, arr2 has a K x d matrix representing all centroids. If there was an error, arr2 is NULL*/
     return arr2;
 }
 
