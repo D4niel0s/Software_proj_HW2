@@ -164,14 +164,14 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     }
 
     for(i=0; i<N;++i){
-        OBJ = PyList_GetItem(GivenDP, i);
-        arr1 = PyObject_GetAttrString(OBJ, "coords");
+        OBJ = PyList_GetItem(GivenDP, i); /*Get i-th element from datapoints*/
+        arr1 = PyObject_GetAttrString(OBJ, "coords"); /*Get datapoints[i].coords*/
         data[i].coords = (double *)malloc(sizeof(double)*d);
         data[i].dim = d;
         data[i].cluster = -1;
         if(i<K){
-            OBJ = PyList_GetItem(GivenDP, i);
-            arr2 = PyObject_GetAttrString(OBJ, "coords");
+            OBJ = PyList_GetItem(GivenCents, i); /*Get i-th element from centroids*/
+            arr2 = PyObject_GetAttrString(OBJ, "coords"); /*Get centroids[i].coords*/
             centroids[i].coords = (double *)malloc(sizeof(double)*d);
             centroids[i].dim = d;
             centroids[i].cluster = -1;
