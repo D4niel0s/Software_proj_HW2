@@ -8,15 +8,6 @@ class Point:
         self.dim = dim
         self.cluster = cluster
 
-    #Since python does not allow constructor overloading, I create a separate function to initialize a point from a dictionary
-    def INIT_DICT(self, dict):
-        self.coords = dict["coords"].copy()
-        self.dim = dict["dim"]
-        self.cluster = dict["cluster"]
-
-    def getCoords(self):
-        return self.coords.copy()
-
 def main():
     np.random.seed(0)
     file = open("t.txt",'r')

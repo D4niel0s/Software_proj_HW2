@@ -143,6 +143,10 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     Point *centroids;
 
     short ERR_FLAG = 0;
+    int i;int j;
+    PyObject *arr1;
+    PyObject *arr2;
+    PyObject *PyDbl;
 
     if(!PyArg_ParseTuple(args, "iiiidOO", &K,&N,&d,&iter,&Epsilon,&GivenDP,&GivenCents)){
         return NULL;
@@ -152,13 +156,69 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     data = (Point *)malloc(sizeof(Point)*N);
     centroids = (Point *)malloc(sizeof(Point)*K);
 
-    /*STILL NEED TO ADD HERE*/
-    
+    if(data == NULL || centroids == NULL){
+        printf("An Error Has Occurred\n");
+        arr2 = NULL;
+        goto FREEALL;
+    }
 
-    
-    
+    for(i=0; i<N;++i){
+        arr1 = PyObject_GetAttrString(&GivenDP[i], "coords");
+        data[i].coords = (double *)malloc(sizeof(double)*d);
+        data[i].dim = d;
+        data[i].cluster = -1;
+        if(i<K){
+            arr2 = PyObject_GetAttrString(&GivenCents[i], "coords");
+            centroids[i].coords = (double *)malloc(sizeof(double)*d);
+            centroids[i].dim = d;
+            centroids[i].cluster = -1;
+        }
+
+        if(data[i].coords == NULL || centroids[i].cords == NULL){
+            printf("An Error Has Occurred\n");
+            arr2 = NULL;
+            goto FREEALL;
+        }
+
+        for(j=0;j<d;++j){
+            (data[i].coords)[j] = PyFloat_AsDouble(PyList_GetItem(arr1, j));
+            if(i<K){
+                (centroids[i].coords)[j] = PyFloat_AsDouble(PyList_GetItem(arr2, j));
+            }
+        }
+    }
+
+    KMeans(K,N,d,iter,data,centroids,ERR_FLAG,Epsilon);
+    if(ERR_FLAG){
+        arr2 = NULL; /*Set return value to NULL*/
+        goto FREEALL; /*We still have to free eveything we allocated*/
+    }
+
+    /*Build matrix of centroids from centroids outputted from KMeans algortihm*/
+    arr2 = PyList_New(K);
+    for(i=0;i<K;++i){
+        arr1 = PyList_New(d);
+        for(j=0;j<d;++j){
+            PyDbl = Py_BuildValue("d", (centroids[i].coords)[j]);
+            PyList_SetItem(arr1, j, PyDbl);
+        }
+        PyList_SetItem(arr2, i, arr1)
+    }
+
+    /*free everything*/
+    FREEALL:
+    for(i=0;i<N;++i){
+        free(data[i].coords);
+        if(i<K){
+            free(centroids[i].coords);
+        }
+    }
+    free(data);
+    free(centroids);
+
+    /*If everything succeeded, arr2 has an K x d matrix representing all centroids. If there was an error, arr2 is NULL*/
+    return arr2;
 }
-
 
 
 static PyMethodDef kmeans_methods[] = {
