@@ -145,7 +145,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     short ERR_FLAG = 0;
     int i;int j;
     PyObject *arr1;
-    PyObject *arr2;
+    PyObject *arr2 = NULL;
     PyObject *PyDbl;
     PyObject *OBJ;
 
@@ -164,12 +164,14 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     }
 
     for(i=0; i<N;++i){
-        arr1 = PyObject_GetAttrString(&GivenDP[i], "coords");
+        OBJ = PyList_GetItem(GivenDP, i);
+        arr1 = PyObject_GetAttrString(OBJ, "coords");
         data[i].coords = (double *)malloc(sizeof(double)*d);
         data[i].dim = d;
         data[i].cluster = -1;
         if(i<K){
-            arr2 = PyObject_GetAttrString(&GivenCents[i], "coords");
+            OBJ = PyList_GetItem(GivenDP, i);
+            arr2 = PyObject_GetAttrString(OBJ, "coords");
             centroids[i].coords = (double *)malloc(sizeof(double)*d);
             centroids[i].dim = d;
             centroids[i].cluster = -1;
@@ -180,7 +182,6 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
             arr2 = NULL;
             goto FREEALL;
         }
-
         for(j=0;j<d;++j){
             OBJ = PyList_GetItem(arr1, j);
             (data[i].coords)[j] = PyFloat_AsDouble(OBJ);
