@@ -13,21 +13,21 @@ def main():
     np.random.seed(0)
     file = open("t.txt",'r')
 
-    data = [Point([0]*4,4,-1)]*100 # Initialize data array to default values
+    data = [Point([0]*8,8,-1)]*430 # Initialize data array to default values
 
-    for i in range(100):
+    for i in range(430):
         line = file.readline()
         args = line.split(",")
-        data[i]= Point(list(map(float,args)), 4, -1) #map function applies float() to each element of args, then turn it to a list using list()
+        data[i]= Point(list(map(float,args)), 8, -1) #map function applies float() to each element of args, then turn it to a list using list()
 
-    cents = INIT_CENTS(data, 4, 3)
+    cents = INIT_CENTS(data, 8, 7)
     
     for i in cents:
        print(findPinARR(i, data), end = ',')
     print()
 
-    mat = KM.kmeans(3,100,4,1000,0.01,data,cents);
-
+    mat = KM.kmeans(7,430,8,1000,0.01,data,cents);
+    
     for i in mat:
         for j in i:
             print("%.4f" % j, end=',')

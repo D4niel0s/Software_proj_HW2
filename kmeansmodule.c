@@ -152,7 +152,6 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     if(!PyArg_ParseTuple(args, "iiiidOO", &K,&N,&d,&iter,&Epsilon,&GivenDP,&GivenCents)){
         return NULL;
     }
-    
     /*Allocate everything and copy values from python Point Ojbects to C Point structs*/
     data = (Point *)malloc(sizeof(Point)*N);
     centroids = (Point *)malloc(sizeof(Point)*K);
@@ -166,22 +165,30 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     for(i=0; i<N;++i){
         OBJ = PyList_GetItem(GivenDP, i); /*Get i-th element from datapoints*/
         arr1 = PyObject_GetAttrString(OBJ, "coords"); /*Get datapoints[i].coords*/
-        data[i].coords = (double *)malloc(sizeof(double)*d);
-        data[i].dim = d;
-        data[i].cluster = -1;
-        if(i<K){
-            OBJ = PyList_GetItem(GivenCents, i); /*Get i-th element from centroids*/
-            arr2 = PyObject_GetAttrString(OBJ, "coords"); /*Get centroids[i].coords*/
-            centroids[i].coords = (double *)malloc(sizeof(double)*d);
-            centroids[i].dim = d;
-            centroids[i].cluster = -1;
-        }
 
-        if(data[i].coords == NULL || centroids[i].coords == NULL){
+        data[i].coords = (double *)malloc(sizeof(double)*d);
+        if(data[i].coords == NULL){
             printf("An Error Has Occurred\n");
             arr2 = NULL;
             goto FREEALL;
         }
+        data[i].dim = d;
+        data[i].cluster = -1;
+
+        if(i<K){
+            OBJ = PyList_GetItem(GivenCents, i); /*Get i-th element from centroids*/
+            arr2 = PyObject_GetAttrString(OBJ, "coords"); /*Get centroids[i].coords*/
+
+            centroids[i].coords = (double *)malloc(sizeof(double)*d);
+            if(centroids[i].coords == NULL){
+                printf("An Error Has Occurred\n");
+                arr2 = NULL;
+                goto FREEALL;
+            }
+            centroids[i].dim = d;
+            centroids[i].cluster = -1;
+        }
+
         for(j=0;j<d;++j){
             OBJ = PyList_GetItem(arr1, j);
             (data[i].coords)[j] = PyFloat_AsDouble(OBJ);
@@ -191,7 +198,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
             }
         }
     }
-
+    
     KMeans(K,N,d,iter,data,centroids,&ERR_FLAG,Epsilon);
     if(ERR_FLAG){
         arr2 = NULL; /*Set return value to NULL*/
