@@ -142,6 +142,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     Point *data;
     Point *centroids;
 
+    /*Local vars*/
     short ERR_FLAG = 0;
     int i;int j;
     PyObject *arr1;
@@ -152,6 +153,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     if(!PyArg_ParseTuple(args, "iiiidOO", &K,&N,&d,&iter,&Epsilon,&GivenDP,&GivenCents)){
         return NULL;
     }
+
     /*Allocate everything and copy values from python Point Ojbects to C Point structs*/
     data = (Point *)malloc(sizeof(Point)*N);
     centroids = (Point *)malloc(sizeof(Point)*K);
@@ -165,7 +167,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
     for(i=0; i<N;++i){
         OBJ = PyList_GetItem(GivenDP, i); /*Get i-th element from datapoints*/
         arr1 = PyObject_GetAttrString(OBJ, "coords"); /*Get datapoints[i].coords*/
-
+        /*Init data[i]*/
         data[i].coords = (double *)malloc(sizeof(double)*d);
         if(data[i].coords == NULL){
             printf("An Error Has Occurred\n");
@@ -178,7 +180,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
         if(i<K){
             OBJ = PyList_GetItem(GivenCents, i); /*Get i-th element from centroids*/
             arr2 = PyObject_GetAttrString(OBJ, "coords"); /*Get centroids[i].coords*/
-
+            /*Init centroids[i]*/
             centroids[i].coords = (double *)malloc(sizeof(double)*d);
             if(centroids[i].coords == NULL){
                 printf("An Error Has Occurred\n");
@@ -189,11 +191,12 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
             centroids[i].cluster = -1;
         }
 
+        /*Fill up coordinates in data[i] and centroids[i]*/
         for(j=0;j<d;++j){
-            OBJ = PyList_GetItem(arr1, j);
-            (data[i].coords)[j] = PyFloat_AsDouble(OBJ);
+            OBJ = PyList_GetItem(arr1, j); /*Get (datapoints[i].coords)[j]*/
+            (data[i].coords)[j] = PyFloat_AsDouble(OBJ); /*Parse it as double and store in correct place*/
             if(i<K){
-                OBJ = PyList_GetItem(arr2, j);
+                OBJ = PyList_GetItem(arr2, j); /*Get (centroids[i].coords)[j]*/
                 (centroids[i].coords)[j] = PyFloat_AsDouble(OBJ);
             }
         }
