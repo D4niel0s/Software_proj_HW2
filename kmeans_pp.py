@@ -1,3 +1,4 @@
+import kmeans_module as KM
 import numpy as np
 import math
 
@@ -22,9 +23,14 @@ def main():
     cents = INIT_CENTS(data, 4, 3)
     
     for i in cents:
-       print(findPinARR(i, data))
-    
-    
+       print(findPinARR(i, data), end = ',')
+    print()
+
+    mat = KM.kmeans(3,100,4,1000,0.01,data,cents);
+
+    for i in mat:
+        print(i)
+
 #Returns the index of a Point in a given Point array, returns -1 if not found
 def findPinARR(x, arr):
     for i in range(len(arr)):

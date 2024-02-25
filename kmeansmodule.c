@@ -222,13 +222,22 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
 
 
 static PyMethodDef kmeans_methods[] = {
-    {"kmeans",(PyFunction) KMeans, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
+    {"kmeans",(PyFunction) kmeans_c, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
     {NULL,NULL,0,NULL}
 };
 
 static struct PyModuleDef KmeansModule = {
     PyModuleDef_HEAD_INIT,"kmeans_module",NULL, -1, kmeans_methods
 };
+
+PyMODINIT_FUNC PyInit_kmeans_module(void){
+    PyObject *m;
+    m = PyModule_Create(&KmeansModule);
+    if(!m){
+        return NULL;
+    }
+    return m;
+}
 
 
 /*Finds closest centroid (denoted by cluster number) to a given point*/
