@@ -14,6 +14,8 @@ class Point:
         self.dim = dict["dim"]
         self.cluster = dict["cluster"]
 
+    def getCoords(self):
+        return self.coords.copy()
 
 def main():
     np.random.seed(0)

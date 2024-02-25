@@ -121,9 +121,42 @@ void KMeans(int K, int N, int d, int iter, Point *data, Point *centroids, short 
     /*Centroids is not freed since it's the "Output" of the KMeans function (Should be freed outside)*/
 }
 
-
+/*Expects following inputs:
+//K-number of clusters, N-number of datapoints, d-Dimension of points
+//iter-Max number of iterations, data-An array of points
+//centroids-The array of centroids (array of points from datapoints)
+//Epsilon-The value for kmeans convergence
+//Assumes validity of data and centroids. (According to other arguments)
+*/
 static PyObject* kmeans_c(PyObject *self, PyObject *args){
-    /*NEED TO ADD PYTHON HANDLING OF FUNCTION KMeans()*/
+    /*Inputs given from python call*/
+    int K;
+    int N;
+    int d;
+    int iter;
+    double Epsilon;
+    PyObject *GivenDP;
+    PyObject *GivenCents;
+
+    /*Will be filled with correct values after parsing python objects*/
+    Point *data;
+    Point *centroids;
+
+    short ERR_FLAG = 0;
+
+    if(!PyArg_ParseTuple(args, "iiiidOO", &K,&N,&d,&iter,&Epsilon,&GivenDP,&GivenCents)){
+        return NULL;
+    }
+    
+    /*Allocate everything and copy values from python Point Ojbects to C Point structs*/
+    data = (Point *)malloc(sizeof(Point)*N);
+    centroids = (Point *)malloc(sizeof(Point)*K);
+
+    /*STILL NEED TO ADD HERE*/
+    
+
+    
+    
 }
 
 
