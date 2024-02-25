@@ -6,8 +6,13 @@ class Point:
     def __init__(self, coords, dim, cluster):
         self.coords = coords
         self.dim = dim
-        self.cluster = cluster    
+        self.cluster = cluster
 
+    #Since python does not allow constructor overloading, I create a separate function to initialize a point from a dictionary
+    def INIT_DICT(self, dict):
+        self.coords = dict["coords"].copy()
+        self.dim = dict["dim"]
+        self.cluster = dict["cluster"]
 
 
 def main():
