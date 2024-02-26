@@ -236,12 +236,12 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
 
 
 static PyMethodDef kmeans_methods[] = {
-    {"kmeans",(PyCFunction) kmeans_c, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
+    {"fit",(PyCFunction) kmeans_c, METH_VARARGS, PyDoc_STR("Implementation of kmeans algorithm in C!")},
     {NULL,NULL,0,NULL}
 };
 
 static struct PyModuleDef KmeansModule = {
-    PyModuleDef_HEAD_INIT,"kmeans_module",NULL, -1, kmeans_methods
+    PyModuleDef_HEAD_INIT,"mykmeanssp",NULL, -1, kmeans_methods
 };
 
 PyMODINIT_FUNC PyInit_kmeans_module(void){

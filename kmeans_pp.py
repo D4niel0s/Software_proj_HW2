@@ -1,6 +1,8 @@
-import kmeans_module as KM
+import mykmeanssp as KM
 import numpy as np
+import pandas as pd
 import math
+import sys
 
 
 class Point:
@@ -11,27 +13,62 @@ class Point:
 
 def main():
     np.random.seed(0)
-    file = open("t.txt",'r')
+    DEF_MAX_ITER = 300
 
-    data = [Point([0]*8,8,-1)]*430 # Initialize data array to default values
+    argc = len(sys.argv)
+    if(argc == 5): #Iter not given
+        iter = DEF_MAX_ITER       
+        f1 = pd.read_csv(sys.argv[3])
+        f2 = pd.read_csv(sys.argv[4])
+    elif(argc == 6): #Iter given
+        f1 = pd.read_csv(sys.argv[4])
+        f2 = pd.read_csv(sys.argv[5])    
+    else:
+        print("An Error Has Occurred")
+        exit(1)
 
-    for i in range(430):
+    N = len(f1) #Assume f1,f2 have the same length
+
+    if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
+        print("Invalid number of clusters!")
+        exit(1)
+    K = int(sys.argv[1])
+
+    if(argc == 5):
+        eps = float(sys.argv[2])
+    elif(argc == 6): #iter is given
+        if((not isInt(sys.argv[2])) or (not 1<int(sys.argv[2])) or (not int(sys.argv[2])<1000)):
+            print("Invalid maximum iteration!")
+            exit(1)
+        iter = int(sys.argv[2])
+        eps = float(sys.argv[3])
+
+    file = pd.merge(f1,f2, key=f1.columns[0] ,how="inner")
+    _,d = pd.shape(file) #N is already set to correct value, set d
+
+    file = file.sort_values(by=file.columns[0])
+
+    data = [Point([0]*d,d,-1)]*N # Initialize data array to default values
+
+    for i in range(N):
         line = file.readline()
         args = line.split(",")
-        data[i]= Point(list(map(float,args)), 8, -1) #map function applies float() to each element of args, then turn it to a list using list()
+        data[i]= Point(list(map(float,args)), d, -1) #map function applies float() to each element of args, then turn it to a list using list()
 
-    cents = INIT_CENTS(data, 8, 7)
+    cents = INIT_CENTS(data, d, K)
     
     for i in cents:
        print(findPinARR(i, data), end = ',')
     print()
 
-    mat = KM.kmeans(7,430,8,1000,0.01,data,cents);
+    mat = KM.fit(K,N,d,iter,eps,data,cents);
     
     for i in mat:
         for j in i:
             print("%.4f" % j, end=',')
         print()
+
+
 
 #Returns the index of a Point in a given Point array, returns -1 if not found
 def findPinARR(x, arr):
@@ -94,6 +131,14 @@ def dist(x,y, dim):
 
     dist = math.sqrt(dist)
     return dist
+
+def isInt(inp):
+    flag = True
+    try:
+        int(inp)
+    except ValueError:
+        flag = False
+    return flag
 
 if __name__ == '__main__':
     main()
