@@ -17,55 +17,64 @@ def main():
 
     argc = len(sys.argv)
     if(argc == 5): #Iter not given
+        eps = float(sys.argv[2])
         iter = DEF_MAX_ITER       
-        f1 = pd.read_csv(sys.argv[3])
-        f2 = pd.read_csv(sys.argv[4])
+        f1 = pd.read_csv(sys.argv[3], header=None)
+        f2 = pd.read_csv(sys.argv[4], header=None)
     elif(argc == 6): #Iter given
-        f1 = pd.read_csv(sys.argv[4])
-        f2 = pd.read_csv(sys.argv[5])    
+        if((not isInt(sys.argv[2])) or (not 1<int(sys.argv[2])) or (not int(sys.argv[2])<1000)):
+            print("Invalid maximum iteration!")
+            exit(1)
+        iter = int(sys.argv[2])
+        eps = float(sys.argv[3])
+        f1 = pd.read_csv(sys.argv[4], header=None)
+        f2 = pd.read_csv(sys.argv[5], header=None)    
     else:
         print("An Error Has Occurred")
         exit(1)
 
-    N = len(f1) #Assume f1,f2 have the same length
+    file = pd.merge(f1,f2, on=f1.columns[0] ,how="inner",sort=True) #Also sorts
+    #When using this technique, I get an "extra" column - the given 'keys' that should be removed
+    file.drop(file.columns[0],inplace=True,axis=1)
+    N,d = file.shape #Set N and d
+
+    #Convert dataframe to matrix of values
+    file = list(file.to_numpy())
+    for i in file:
+        i = list(i)
 
     if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
         print("Invalid number of clusters!")
         exit(1)
     K = int(sys.argv[1])
 
-    if(argc == 5):
-        eps = float(sys.argv[2])
-    elif(argc == 6): #iter is given
-        if((not isInt(sys.argv[2])) or (not 1<int(sys.argv[2])) or (not int(sys.argv[2])<1000)):
-            print("Invalid maximum iteration!")
-            exit(1)
-        iter = int(sys.argv[2])
-        eps = float(sys.argv[3])
 
-    file = pd.merge(f1,f2, key=f1.columns[0] ,how="inner")
-    _,d = pd.shape(file) #N is already set to correct value, set d
 
-    file = file.sort_values(by=file.columns[0])
+    #Initialize data to our data in file
+    data = [Point([0]*d,d,-1)]*N #Initialize data array to default values
+    for i in range(len(file)):
+        data[i]= Point(list(map(float,file[i])), d, -1) #map function applies float() to each element of i, then turn it to a list using list()
 
-    data = [Point([0]*d,d,-1)]*N # Initialize data array to default values
-
-    for i in range(N):
-        line = file.readline()
-        args = line.split(",")
-        data[i]= Point(list(map(float,args)), d, -1) #map function applies float() to each element of args, then turn it to a list using list()
-
-    cents = INIT_CENTS(data, d, K)
+    cents = INIT_CENTS(data, d, K) #Initialize centroids using Kmeans++ algorithm
     
-    for i in cents:
-       print(findPinARR(i, data), end = ',')
+    #Print calculated centroids (Their indexes)
+    for i in range(len(cents)):
+        print(findPinARR(cents[i], data), end = '')
+        if(i==len(cents)-1):
+            break
+        print(",",end='')
     print()
 
+    #Perform K-Means clustering using my module
     mat = KM.fit(K,N,d,iter,eps,data,cents);
     
+    #Print output from clustering
     for i in mat:
-        for j in i:
-            print("%.4f" % j, end=',')
+        for j in range(len(i)):
+            print("%.4f" % i[j], end='')
+            if(j==len(i)-1):
+                break
+            print(",",end='')
         print()
 
 
