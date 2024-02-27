@@ -244,7 +244,7 @@ static struct PyModuleDef KmeansModule = {
     PyModuleDef_HEAD_INIT,"mykmeanssp",NULL, -1, kmeans_methods
 };
 
-PyMODINIT_FUNC PyInit_kmeans_module(void){
+PyMODINIT_FUNC PyInit_mykmeanssp(void){
     PyObject *m;
     m = PyModule_Create(&KmeansModule);
     if(!m){

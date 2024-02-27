@@ -19,8 +19,8 @@ def main():
     if(argc == 5): #Iter not given
         eps = float(sys.argv[2])
         iter = DEF_MAX_ITER       
-        f1 = pd.read_csv(sys.argv[3], header=None)
-        f2 = pd.read_csv(sys.argv[4], header=None)
+        f1 = pd.read_csv(sys.argv[3], header=None, header=None)
+        f2 = pd.read_csv(sys.argv[4], header=None, header=None)
     elif(argc == 6): #Iter given
         if((not isInt(sys.argv[2])) or (not 1<int(sys.argv[2])) or (not int(sys.argv[2])<1000)):
             print("Invalid maximum iteration!")
