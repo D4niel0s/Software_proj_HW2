@@ -79,7 +79,7 @@ def main():
         print()
 
 
-
+#Returns a list of indexes that correspond to the indexes of cents in data (ret[j] = i <=> data[i] == cents[j])
 def findCentsInData(cents, data):
     ret = []
     for i in range(len(data)):
@@ -88,22 +88,9 @@ def findCentsInData(cents, data):
                 if((cents[j]).coords[k] != (data[i].coords[k])):
                     break
                 if(k == len(data[i].coords)-1):
-                    ret.append[i]
-    return tuple(ret)
+                    ret.append(i)
+    return ret
             
-
-#Returns the index of a Point in a given Point array, returns -1 if not found
-def findPinARR(x, arr):
-    for i in range(len(arr)):
-        flag = True
-        for j in range(len(arr[i].coords)):
-            if((arr[i].coords)[j] != x.coords[j]):
-                flag = False
-            
-        if(flag == True):
-            return i
-    return -1
-
 #Initializes centroids from datapoints, returns centroids
 def INIT_CENTS(dp, d, k):
     cents = []
