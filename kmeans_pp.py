@@ -38,15 +38,15 @@ def main():
     file.drop(file.columns[0],inplace=True,axis=1)
     N,d = file.shape #Set N and d
 
-    #Convert dataframe to matrix of values
-    file = list(file.to_numpy())
-    for i in file:
-        i = list(i)
-
     if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
         print("Invalid number of clusters!")
         exit(1)
     K = int(sys.argv[1])
+
+    #Convert dataframe to matrix of values
+    file = list(file.to_numpy())
+    for i in file:
+        i = list(i)
 
     #Initialize data to our data in file
     data = [Point([0]*d,d,-1)]*N #Initialize data array to default values
@@ -55,11 +55,11 @@ def main():
 
     cents = INIT_CENTS(data, d, K) #Initialize centroids using Kmeans++ algorithm
     
-    #Print calculated centroids (Their indexes)
-    indexes = findCentsInData(cents, data)
-    for i in range(len(indexes)):
+    #Print calculated centroids (Their indices)
+    indices = findCentsInData(cents, data)
+    for i in range(len(indices)):
         print(i,end='')
-        if(i==len(indexes)-1):
+        if(i==len(indices)-1):
             break
         print(",",end='')
     print()
@@ -77,7 +77,7 @@ def main():
         print()
 
 
-#Returns a list of indexes that correspond to the indexes of cents in data (ret[j] = i <=> data[i] == cents[j])
+#Returns a list of indices that correspond to the indices of cents in data (ret[j] = i <=> data[i] == cents[j])
 def findCentsInData(cents, data):
     ret = []
     for i in range(len(data)):
