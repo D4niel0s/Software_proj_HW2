@@ -18,22 +18,15 @@ def main():
     argc = len(sys.argv)
     if(argc == 5): #Iter not given
         iter = DEF_MAX_ITER       
-        f1 = pd.read_csv(sys.argv[3])
-        f2 = pd.read_csv(sys.argv[4])
+        f1 = pd.read_csv(sys.argv[3], header=None)
+        f2 = pd.read_csv(sys.argv[4], header=None)
     elif(argc == 6): #Iter given
-        f1 = pd.read_csv(sys.argv[4])
-        f2 = pd.read_csv(sys.argv[5])    
+        f1 = pd.read_csv(sys.argv[4], header=None)
+        f2 = pd.read_csv(sys.argv[5], header=None)    
     else:
         print("An Error Has Occurred")
         exit(1)
 
-    f1.set_index(0, inplace=True)
-    f2.set_index(0, inplace=True)
-
-    print("F1:")
-    print(f1)
-    print("F2:")
-    print(f2)
     N = len(f1) #Assume f1,f2 have the same length
 
     if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
@@ -50,29 +43,37 @@ def main():
         iter = int(sys.argv[2])
         eps = float(sys.argv[3])
 
-    file = pd.merge(f1,f2, key=f1.columns[0] ,how="inner")
-    _,d = pd.shape(file) #N is already set to correct value, set d
+    file = pd.merge(f1,f2, on=f1.columns[0] ,how="inner",sort=True)
+    file.drop(file.columns[0],inplace=True,axis=1)
+    _,d = file.shape #N is already set to correct value, set d
 
-    file = file.sort_values(by=file.columns[0])
+    file = list(file.to_numpy())
 
+    for i in file:
+        i=list(i)
+    
     data = [Point([0]*d,d,-1)]*N # Initialize data array to default values
 
-    for i in range(N):
-        line = file.readline()
-        args = line.split(",")
-        data[i]= Point(list(map(float,args)), d, -1) #map function applies float() to each element of args, then turn it to a list using list()
+    for i in range(len(file)):
+        data[i]= Point(list(map(float,file[i])), d, -1) #map function applies float() to each element of i, then turn it to a list using list()
 
     cents = INIT_CENTS(data, d, K)
     
-    for i in cents:
-       print(findPinARR(i, data), end = ',')
+    for i in range(len(cents)):
+        print(findPinARR(cents[i], data), end = '')
+        if(i==len(cents)-1):
+            break
+        print(",",end='')
     print()
 
     mat = KM.fit(K,N,d,iter,eps,data,cents);
     
     for i in mat:
-        for j in i:
-            print("%.4f" % j, end=',')
+        for j in range(len(i)):
+            print("%.4f" % i[j], end='')
+            if(j==len(i)-1):
+                break
+            print(",",end='')
         print()
 
 
