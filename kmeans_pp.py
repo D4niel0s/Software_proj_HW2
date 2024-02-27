@@ -27,6 +27,13 @@ def main():
         print("An Error Has Occurred")
         exit(1)
 
+    f1.set_index(0, inplace=True)
+    f2.set_index(0, inplace=True)
+
+    print("F1:")
+    print(f1)
+    print("F2:")
+    print(f2)
     N = len(f1) #Assume f1,f2 have the same length
 
     if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
