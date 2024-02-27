@@ -56,10 +56,9 @@ def main():
     cents = INIT_CENTS(data, d, K) #Initialize centroids using Kmeans++ algorithm
     
     #Print calculated centroids (Their indices)
-    indices = findCentsInData(cents, data)
-    for i in range(len(indices)):
-        print(i,end='')
-        if(i==len(indices)-1):
+    for i in range(len(cents)):
+        print(findPinARR(cents[i], data),end='')
+        if(i==len(cents)-1):
             break
         print(",",end='')
     print()
@@ -76,18 +75,17 @@ def main():
             print(",",end='')
         print()
 
-
-#Returns a list of indices that correspond to the indices of cents in data (ret[j] = i <=> data[i] == cents[j])
-def findCentsInData(cents, data):
-    ret = []
-    for i in range(len(data)):
-        for j in range(len(cents)):
-            for k in range(len(data[i].coords)):
-                if((cents[j]).coords[k] != (data[i].coords[k])):
-                    break
-                if(k == len(data[i].coords)-1):
-                    ret.append(i)
-    return ret
+#Returns the index of a Point in a given Point array, returns -1 if not found
+def findPinARR(x, arr):
+    for i in range(len(arr)):
+        flag = True
+        for j in range(len(arr[i].coords)):
+            if((arr[i].coords)[j] != x.coords[j]):
+                flag = False
+            
+        if(flag == True):
+            return i
+    return -1
             
 #Initializes centroids from datapoints, returns centroids
 def INIT_CENTS(dp, d, k):
