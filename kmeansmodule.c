@@ -15,7 +15,8 @@ double dist(Point, Point);
 void ADD(Point, Point);
 void MULT(Point, double);
 
-#define DEF_MAX_ITER 200
+static PyObject* kmeans_c(PyObject *, PyObject *);
+PyMODINIT_FUNC PyInit_kmeans_module(void);
 
 /*K clusters, N points, d dimension, iter iterations, data - the points, centroids - the centroids .
 //Assumes data is valid and allocated.
