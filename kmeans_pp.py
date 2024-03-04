@@ -52,13 +52,13 @@ def main():
     #Initialize data to our data in file
     data = [Point([0]*d,d,-1,-1)]*N #Initialize data array to default values
     for i in range(len(file)):
-        data[i]= Point(list(map(float,(file[i])[1:])), d, (file[i])[0]) #map function applies float() to each element of i, then turn it to a list using list()
+        data[i]= Point(list(map(float,(file[i])[1:])), d, -1,(file[i])[0]) #map function applies float() to each element of i, then turn it to a list using list()
 
     cents = INIT_CENTS(data, d, K) #Initialize centroids using Kmeans++ algorithm
     
     #Print calculated centroids (Their indices)
     for i in range(len(cents)):
-        print(cents[i].index,end='')
+        print(int(cents[i].index),end='')
         if(i==len(cents)-1):
             break
         print(",",end='')
