@@ -67,7 +67,7 @@ def main():
     #Perform K-Means clustering using my module
     mat = KM.fit(K,N,d,iter,eps,data,cents);
     
-    #Print output from clustering
+    #Print output from clustering (Output from fit() is given in a matrix where each row is a centroid)
     for i in mat:
         for j in range(len(i)):
             print("%.4f" % i[j], end='')
