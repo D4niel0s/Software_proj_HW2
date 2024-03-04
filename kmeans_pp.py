@@ -6,10 +6,11 @@ import sys
 
 
 class Point:
-    def __init__(self, coords, dim, cluster):
+    def __init__(self, coords, dim, cluster, index):
         self.coords = coords
         self.dim = dim
         self.cluster = cluster
+        self.index = index
 
 def main():
     np.random.seed(0)
@@ -34,9 +35,9 @@ def main():
         exit(1)
 
     file = pd.merge(f1,f2, on=f1.columns[0] ,how="inner",sort=True) #Also sorts
-    #When using this technique, I get an "extra" column - the given 'keys' that should be removed
-    file.drop(file.columns[0],inplace=True,axis=1)
+    #When using this technique, i still have the 'keys' column which should be ignored
     N,d = file.shape #Set N and d
+    d -= 1 #Ignore keys
 
     if((not isInt(sys.argv[1])) or (not 1<int(sys.argv[1])) or (not int(sys.argv[1]) < N)):
         print("Invalid number of clusters!")
@@ -49,15 +50,15 @@ def main():
         i = list(i)
 
     #Initialize data to our data in file
-    data = [Point([0]*d,d,-1)]*N #Initialize data array to default values
+    data = [Point([0]*d,d,-1,-1)]*N #Initialize data array to default values
     for i in range(len(file)):
-        data[i]= Point(list(map(float,file[i])), d, -1) #map function applies float() to each element of i, then turn it to a list using list()
+        data[i]= Point(list(map(float,(file[i])[1:])), d, (file[i])[0]) #map function applies float() to each element of i, then turn it to a list using list()
 
     cents = INIT_CENTS(data, d, K) #Initialize centroids using Kmeans++ algorithm
     
     #Print calculated centroids (Their indices)
     for i in range(len(cents)):
-        print(findPinARR(cents[i], data),end='')
+        print(cents[i].index,end='')
         if(i==len(cents)-1):
             break
         print(",",end='')
@@ -74,19 +75,7 @@ def main():
                 break
             print(",",end='')
         print()
-
-#Returns the index of a Point in a given Point array, returns -1 if not found
-def findPinARR(x, arr):
-    for i in range(len(arr)):
-        flag = True
-        for j in range(len(arr[i].coords)):
-            if((arr[i].coords)[j] != x.coords[j]):
-                flag = False
-            
-        if(flag == True):
-            return i
-    return -1
-            
+        
 #Initializes centroids from datapoints, returns centroids
 def INIT_CENTS(dp, d, k):
     cents = []
