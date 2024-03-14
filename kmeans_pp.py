@@ -19,6 +19,9 @@ def main():
     argc = len(sys.argv)
     if(argc == 5): #Iter not given
         eps = float(sys.argv[2])
+        if(eps < 0):
+            print("Invalid epsilon!")
+            exit(1)
         iter = DEF_MAX_ITER       
         f1 = pd.read_csv(sys.argv[3], header=None)
         f2 = pd.read_csv(sys.argv[4], header=None)
@@ -28,6 +31,9 @@ def main():
             exit(1)
         iter = int(sys.argv[2])
         eps = float(sys.argv[3])
+        if(eps < 0):
+            print("Invalid epsilon!")
+            exit(1)
         f1 = pd.read_csv(sys.argv[4], header=None)
         f2 = pd.read_csv(sys.argv[5], header=None)    
     else:
