@@ -238,7 +238,7 @@ static PyObject* kmeans_c(PyObject *self, PyObject *args){
 
 static PyMethodDef kmeans_methods[] = {
     {"fit",(PyCFunction) kmeans_c, METH_VARARGS,
-    PyDoc_STR("Recieves following arguments:\nK - Number of clusters in final clustering\nN - Number of points(Observations)\nd - Dimension of point(s)\niter - Maximum number of iterations for kmeans algorithm\neps - Convergence value epsilon\ndata - The points(Oservations have to match N)\ncents - Initial centroids(Has to match K)")},
+    PyDoc_STR("Recieves following arguments:\nK - Number of clusters in final clustering\nN - Number of points(Observations)\nd - Dimension of point(s)\niter - Maximum number of iterations for kmeans algorithm\neps - Convergence value epsilon\ndata - The points(Oservations have to match N)\ncents - Initial centroids(Has to match K)\nReturn value is a list(matrix) containing final centroids after clustering.")},
     {NULL,NULL,0,NULL}
 };
 
